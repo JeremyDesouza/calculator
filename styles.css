@@ -1,0 +1,84 @@
+/*refactor the box sizes for diplay and input classes */
+/*
+.container {
+    margin:auto;
+    width: 50vh;
+    height:50vh;
+    background-color:rgb(199, 192, 192);
+    padding-top:3%;
+    padding-bottom:3%;
+
+}
+*/
+.container {
+    display:flex;
+    flex-direction:column;
+
+
+    width:400px;
+    height:400px;
+    
+    
+    margin:auto;
+    background-color:rgb(199, 192, 192);
+    padding-top:2%;
+    padding-bottom:2%;
+}
+
+.display {
+    margin:auto;
+    width:90%;
+    min-height:25%;
+    background-color:white;
+    border:1px solid black;
+    
+    margin-bottom:5px;
+    
+}
+
+.expression {
+    
+    word-wrap:break-word;
+}
+
+.input-container {
+    margin:auto;
+    width:90%;
+    height:75%;
+    
+    
+    
+}
+.input-grid {
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 2px;
+
+    
+    
+    width:auto;
+    height:100%;
+    background-color: white;
+    background-color:rgb(199,192,192);
+    
+    
+    
+}
+.input-btn {
+    font-size:20px;
+    font-family:arial;
+    border-radius:0;
+}
+
+#equal-btn {
+    grid-column: 4/6;
+    
+}
+
+.input-btn:hover {
+    background-color: white;
+}
+
+
+
