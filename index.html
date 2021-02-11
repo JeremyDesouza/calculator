@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculator</title>
+  <meta charset="UTF-8"/>
+  <link rel='stylesheet' href="styles.css">
+</head>
+<body>
+    <div class='container'>
+        <div class='display'>
+            <p class='expression'>
+                
+            </p>
+            
+
+        </div>
+        <div class='input-container'>
+            <div class='input-grid'>
+                <button type='button' class='input-btn'>7</button>
+                <button type='button' class='input-btn'>8</button>
+                <button type='button' class='input-btn'>9</button>
+                <button type='button' class='input-btn'>C</button>
+                <button type='button' class='input-btn'>AC</button>
+                
+                <button type='button' class='input-btn'>4</button>
+                <button type='button' class='input-btn'>5</button>
+                <button type='button' class='input-btn'>6</button>
+                <button type='button' class='input-btn'>&#247;</button>
+                <button type='button' class='input-btn'>&#215;</button>
+                
+                <button type='button' class='input-btn'>1</button>
+                <button type='button' class='input-btn'>2</button>
+                <button type='button' class='input-btn'>3</button>
+                <button type='button' class='input-btn'>&#43;</button>
+                <button type='button' class='input-btn'>&#8722;</button>
+                
+                <button type='button' class='input-btn'>&#177;</button>
+                <button type='button' class='input-btn'>0</button>
+                <button type='button' class='input-btn'>.</button>
+                <button type='button' class='input-btn' id='equal-btn'>&#61;</button>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+  
+  
+  
+  <script>
+    function add(a, b) {
+        return a + b;
+    }
+
+    function subtract(a, b) {
+        return a - b;
+    }
+
+    function multiply(a, b) {
+        return a * b;
+    }
+
+    function divide(a,b) {
+        if (b == 0) {
+            return 'Division by zero is undefined';
+        } else {
+            return a / b;
+        }
+    }
+
+    function operate(a, b, operator) {
+        
+        switch (operator) {
+            case '+':
+                return add(a, b);
+               
+            case '-':
+                return subtract(a, b);
+                
+            case '*':
+                return multiply(a, b);
+                
+            case '/':
+                return divide(a,b);
+                
+
+        }
+    }
+        
+        
+  </script>
+</body>
+</html>
