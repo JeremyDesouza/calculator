@@ -8,46 +8,143 @@
 <body>
     <div class='container'>
         <div class='display'>
-            <p class='expression'>
+            <p class='display-expression'>
+                
+               
+               
+               
                 
             </p>
-            
+            <p class='display-output'></p>
 
         </div>
-        <div class='input-container'>
+        <!--<div class='input-container'>-->
             <div class='input-grid'>
-                <button type='button' class='input-btn'>7</button>
-                <button type='button' class='input-btn'>8</button>
-                <button type='button' class='input-btn'>9</button>
+                <button type='button' class='input-btn number-btn'>7</button>
+                <button type='button' class='input-btn number-btn'>8</button>
+                <button type='button' class='input-btn number-btn'>9</button>
                 <button type='button' class='input-btn'>C</button>
-                <button type='button' class='input-btn'>AC</button>
+                <button type='button' class='input-btn' id='clear-btn'>AC</button>
                 
-                <button type='button' class='input-btn'>4</button>
-                <button type='button' class='input-btn'>5</button>
-                <button type='button' class='input-btn'>6</button>
-                <button type='button' class='input-btn'>&#247;</button>
-                <button type='button' class='input-btn'>&#215;</button>
+                <button type='button' class='input-btn number-btn'>4</button>
+                <button type='button' class='input-btn number-btn'>5</button>
+                <button type='button' class='input-btn number-btn'>6</button>
+                <button type='button' class='input-btn operator-btn' id='divide'>&#247;</button>
+                <button type='button' class='input-btn operator-btn' id='multiply'>&#215;</button>
                 
-                <button type='button' class='input-btn'>1</button>
-                <button type='button' class='input-btn'>2</button>
-                <button type='button' class='input-btn'>3</button>
-                <button type='button' class='input-btn'>&#43;</button>
-                <button type='button' class='input-btn'>&#8722;</button>
+                <button type='button' class='input-btn number-btn'>1</button>
+                <button type='button' class='input-btn number-btn'>2</button>
+                <button type='button' class='input-btn number-btn'>3</button>
+                <button type='button' class='input-btn operator-btn' id='add'>&#43;</button>
+                <button type='button' class='input-btn operator-btn' id='subtract'>&#8722;</button>
                 
                 <button type='button' class='input-btn'>&#177;</button>
-                <button type='button' class='input-btn'>0</button>
+                <button type='button' class='input-btn number-btn'>0</button>
                 <button type='button' class='input-btn'>.</button>
                 <button type='button' class='input-btn' id='equal-btn'>&#61;</button>
                 
                 
                 
             </div>
-        </div>
+        <!--</div>-->
     </div>
   
   
   
   <script>
+    //refactor display so it only outputs to one line.
+    //
+    let storedVal = '';
+    let newVal = '';
+    let result = '';
+    let operator = '';
+    let lastClicked = '';
+
+    const numberBtns = document.querySelectorAll('.number-btn');
+    numberBtns.forEach((numBtn) => { 
+        numBtn.addEventListener('click', displayInput)
+    })
+    
+
+    let inputPara = document.querySelector('.display-output');
+    function displayInput(e) {
+      let value = e.target.innerHTML;
+     
+      if (lastClicked == 'equal-btn') {
+        clear();
+      
+      }
+
+      newVal += value;
+      inputPara.textContent += value;
+      displayExp.textContent += value;
+    }
+    
+
+    const opBtns = document.querySelectorAll('.operator-btn');
+    opBtns.forEach((opBtn) => {
+        opBtn.addEventListener('click', opBtnHandler)
+    })
+    
+    let displayExp = document.querySelector('.display-expression');
+    function opBtnHandler(e) {
+      let operator = e.target.textContent;
+      
+      if (newVal) {
+        if (storedVal) {
+          result = operate(Number(storedVal), Number(newVal), lastClicked);
+          displayExp.textContent = `${result} ${operator} `;
+          storedVal = result;
+        } else {
+          displayExp.textContent += ` ${operator} `;
+          storedVal = newVal;
+        }
+        newVal = '';
+        inputPara.textContent = '';
+      }
+
+      else if (!newVal && storedVal) {
+        inputPara.textContent = '';
+        if (displayExp.textContent.split(' ').length > 1) {
+          displayExp.textContent = displayExp.textContent.slice(0, -2) + operator + ' ';
+        } else {
+          displayExp.textContent += ' ' + operator + ' ';
+        }
+        
+      }
+      
+      lastClicked = e.target.id
+    }
+  
+    const equalBtn = document.querySelector('#equal-btn');
+    equalBtn.addEventListener('click', (e) => {
+    
+      if (newVal && storedVal) {
+        result = operate(Number(storedVal), Number(newVal), lastClicked);
+        displayExp.textContent = result;
+        storedVal = result.toString();
+        newVal = ''
+        inputPara.textContent = '';
+        
+        lastClicked = e.target.id
+    }
+      
+    })
+    
+    
+    const clearBtn = document.querySelector('#clear-btn')
+    clearBtn.addEventListener('click', clear);
+
+    function clear() {
+      storedVal = '';
+      newVal = '';
+      result = '';
+      operator = '';
+      lastClicked = '';
+      displayExp.textContent = '';
+      inputPara.textContent = '';
+    }
+    
     function add(a, b) {
         return a + b;
     }
@@ -70,23 +167,25 @@
 
     function operate(a, b, operator) {
         
-        switch (operator) {
-            case '+':
-                return add(a, b);
-               
-            case '-':
-                return subtract(a, b);
-                
-            case '*':
-                return multiply(a, b);
-                
-            case '/':
-                return divide(a,b);
-                
-
-        }
+      switch (operator) {
+          case 'add':
+              return add(a, b);
+              
+          case 'subtract':
+              return subtract(a, b);
+              
+          case 'multiply':
+              return multiply(a, b);
+              
+          case 'divide':
+              return divide(a,b);
+      }
     }
-        
+
+    
+
+
+
         
   </script>
 </body>
