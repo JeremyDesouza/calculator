@@ -8,14 +8,8 @@
 <body>
     <div class='container'>
         <div class='display'>
-            <p class='display-expression'>
-                
-               
-               
-               
-                
-            </p>
-            <p class='display-output'></p>
+            
+          <p class='display-out'></p>
 
         </div>
         <!--<div class='input-container'>-->
@@ -23,7 +17,7 @@
                 <button type='button' class='input-btn number-btn'>7</button>
                 <button type='button' class='input-btn number-btn'>8</button>
                 <button type='button' class='input-btn number-btn'>9</button>
-                <button type='button' class='input-btn'>C</button>
+                <button type='button' class='input-btn' id='del-btn'>C</button>
                 <button type='button' class='input-btn' id='clear-btn'>AC</button>
                 
                 <button type='button' class='input-btn number-btn'>4</button>
@@ -38,9 +32,9 @@
                 <button type='button' class='input-btn operator-btn' id='add'>&#43;</button>
                 <button type='button' class='input-btn operator-btn' id='subtract'>&#8722;</button>
                 
-                <button type='button' class='input-btn'>&#177;</button>
+                <button type='button' class='input-btn' id='neg-btn'>&#177;</button>
                 <button type='button' class='input-btn number-btn'>0</button>
-                <button type='button' class='input-btn'>.</button>
+                <button type='button' class='input-btn' id='dec-btn'>.</button>
                 <button type='button' class='input-btn' id='equal-btn'>&#61;</button>
                 
                 
@@ -52,32 +46,65 @@
   
   
   <script>
-    //refactor display so it only outputs to one line.
-    //
-    let storedVal = '';
-    let newVal = '';
-    let result = '';
-    let operator = '';
+    //update css alignment for display output to one line
+    //update functions to access values through object for easier display (make call to a display func)
+
+    let values = {storedVal: '', newVal: '', operator:''}
     let lastClicked = '';
 
+
+
+    const decBtn = document.querySelector('#dec-btn');
+    decBtn.addEventListener('click', addDecimal);
+
+
+    function addDecimal() {
+      //clean up function to be less lines
+      //move the includes check above everything so values.newVal only needs 1 assignment
+      if (values.storedVal) {
+        if (values.operator) {
+          
+          if (!values.newVal.includes('.')) {
+          values.newVal += '.';
+          }
+        } else {
+          if (lastClicked == 'equal-btn') {
+            clear();
+            values.newVal += '.';
+          }
+          
+        }
+      } else if (!values.newVal.includes('.')) {
+        values.newVal += '.';
+      }
+      
+      updateDisplay();
+    }
+
+    const display = document.querySelector('.display-out'); 
+    
+    function updateDisplay() {
+      let displayOutput = '';
+      displayOutput = `${values.storedVal} ${values.operator} ${values.newVal}`;
+      display.textContent = displayOutput;
+    }
+    
     const numberBtns = document.querySelectorAll('.number-btn');
     numberBtns.forEach((numBtn) => { 
-        numBtn.addEventListener('click', displayInput)
+        numBtn.addEventListener('click', getInputNumber);
     })
     
 
-    let inputPara = document.querySelector('.display-output');
-    function displayInput(e) {
+    function getInputNumber(e) {
       let value = e.target.innerHTML;
-     
+      
       if (lastClicked == 'equal-btn') {
         clear();
-      
       }
-
-      newVal += value;
-      inputPara.textContent += value;
-      displayExp.textContent += value;
+      values.newVal += value;
+      
+      updateDisplay();
+      
     }
     
 
@@ -86,82 +113,92 @@
         opBtn.addEventListener('click', opBtnHandler)
     })
     
-    let displayExp = document.querySelector('.display-expression');
+    
     function opBtnHandler(e) {
       let operator = e.target.textContent;
       
-      if (newVal) {
-        if (storedVal) {
-          result = operate(Number(storedVal), Number(newVal), lastClicked);
-          displayExp.textContent = `${result} ${operator} `;
-          storedVal = result;
+      if (values.newVal) {
+        if (values.storedVal) {
+          result = operate(Number(values.storedVal), Number(values.newVal), lastClicked);
+          values.storedVal = result;
+        
         } else {
-          displayExp.textContent += ` ${operator} `;
-          storedVal = newVal;
-        }
-        newVal = '';
-        inputPara.textContent = '';
-      }
-
-      else if (!newVal && storedVal) {
-        inputPara.textContent = '';
-        if (displayExp.textContent.split(' ').length > 1) {
-          displayExp.textContent = displayExp.textContent.slice(0, -2) + operator + ' ';
-        } else {
-          displayExp.textContent += ' ' + operator + ' ';
+          values.storedVal = values.newVal;
         }
         
+        values.newVal = '';
+        values.operator= operator;
+      
+      } else if (!values.newVal && values.storedVal) {
+        values.operator = operator;
       }
       
+      updateDisplay();
       lastClicked = e.target.id
     }
   
+
     const equalBtn = document.querySelector('#equal-btn');
     equalBtn.addEventListener('click', (e) => {
     
-      if (newVal && storedVal) {
-        result = operate(Number(storedVal), Number(newVal), lastClicked);
-        displayExp.textContent = result;
-        storedVal = result.toString();
-        newVal = ''
-        inputPara.textContent = '';
+      if (values.newVal && values.storedVal) {
+        result = operate(Number(values.storedVal), Number(values.newVal), lastClicked);
+        values.storedVal = result.toString();
+        values.newVal = '';
+        values.operator = '';
+        updateDisplay();
         
         lastClicked = e.target.id
+        
     }
-      
     })
     
+    const delBtn = document.querySelector('#del-btn');
+    delBtn.addEventListener('click', delLastValue);
+    function delLastValue() {
+     
+      if (values.newVal) {
+        values.newVal = values.newVal.slice(0,-1);
+      
+      } else {
+          if (values.operator) {
+            values.operator = '';
+          
+          } else if (values.storedVal) {
+            values.storedVal = values.storedVal.slice(0,-1);
+            lastClicked = '';
+          }
+          values.newVal = values.storedVal;
+          values.storedVal = '';
+      }
+
+      updateDisplay();
+    }
+
     
     const clearBtn = document.querySelector('#clear-btn')
     clearBtn.addEventListener('click', clear);
-
     function clear() {
-      storedVal = '';
-      newVal = '';
-      result = '';
-      operator = '';
+
+      for (let val in values) {
+        values[val] = '';
+      }
+      updateDisplay()
+      
       lastClicked = '';
-      displayExp.textContent = '';
-      inputPara.textContent = '';
     }
     
-    function add(a, b) {
-        return a + b;
-    }
+    function add(a, b) {return a + b}
 
-    function subtract(a, b) {
-        return a - b;
-    }
+    function subtract(a, b) {return a - b}
 
-    function multiply(a, b) {
-        return a * b;
-    }
+    function multiply(a, b) {return a * b}
 
     function divide(a,b) {
         if (b == 0) {
             return 'Division by zero is undefined';
         } else {
-            return a / b;
+          return a / b;
         }
     }
 
